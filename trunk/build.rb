@@ -8,11 +8,11 @@ objects = build_objects(:sources => Dir['Source/*.cpp'] +
 build_bundle(:bundle_name => 'Astro.app',
              :resources_directory => 'Resources')
 
-build_link(:executable => 'Astro.app/Contents/MacOS/Astro',
-           :objects => objects,
-           :frameworks => ['Cocoa', 'OpenGL', 'GLUT'])
+build_executable(:executable => 'Astro.app/Contents/MacOS/Astro',
+                 :objects => objects,
+                 :frameworks => ['Cocoa', 'OpenGL', 'GLUT'])
 
 bmps2rgba_objects = build_objects(:sources => Dir['Source/bmps2rgba/*.c'])
 
-build_link(:executable => 'bmps2rgba',
-           :objects => bmps2rgba_objects)
+build_executable(:executable => 'bmps2rgba',
+                 :objects => bmps2rgba_objects)
