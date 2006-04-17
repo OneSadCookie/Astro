@@ -169,7 +169,7 @@ if INFO_PLIST_FILTER == None:
         contents_path(),
         INFO_PLIST_FILE)
 else:
-    base_env.Command(
+    base_env.AlwaysBuild(base_env.Command(
         contents_path() + '/Info.plist',
-        [INFO_PLIST_FILE],
-        'cat $SOURCE | ' + INFO_PLIST_FILTER + ' > $TARGET')
+        INFO_PLIST_FILE,
+        'cat $SOURCE | ' + INFO_PLIST_FILTER + ' > $TARGET'))
