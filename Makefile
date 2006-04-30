@@ -1,5 +1,5 @@
 all:
-	scons -j `bc <<< "\`sysctl -n hw.ncpu\` + 1"`
+	scons -j `echo \`sysctl -n hw.ncpu\` + 1 | bc`
 
 clean:
 	scons -c
