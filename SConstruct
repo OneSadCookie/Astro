@@ -17,6 +17,9 @@ BUILD_DIRECTORY = 'Build'
 # Frameworks to link to
 FRAMEWORKS = ['Cocoa', 'OpenGL', 'GLUT']
 
+# Libraries to link to
+LIBRARIES = ['stdc++', 'System']
+
 # Source files to exclude (including SOURCE_DIRECTORY in their path)
 EXCLUDE_SOURCE = ['Source/bmps2rgba/bmps2rgba.c']
 
@@ -80,6 +83,7 @@ def make_base_env():
         base_env.Append(LINKFLAGS = [
             '-framework', framework
         ])
+    base_env.Append(LIBS = LIBRARIES)
     return base_env
 
 def make_arch_env(env, options):
