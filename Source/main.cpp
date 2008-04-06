@@ -53,6 +53,10 @@ void make_message();
 void unproject(int x, int y, float& ox, float& oy);
 
 int main(int argc, char** argv) {
+#if !defined(__APPLE__)
+  chdir("Resources");
+#endif
+
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
   glutInitWindowSize(400, 300);

@@ -21,7 +21,7 @@ static const float JEWEL_NUMBER_INCREASE = 0.000088;
 static const float INITIAL_NUM_ASTEROIDS = 10;
 static const float INITIAL_NUM_JEWELS = 0.04;
 
-static message PAUSED_MESSAGE("Paused", "Press space to continue", WORLD);
+static message *PAUSED_MESSAGE;
 
 static const float REBIRTH_TIME = 1;
 
@@ -205,7 +205,7 @@ void game::draw() {
   
   hud_draw(_lives, _score, WORLD);
   if (_paused) {
-    PAUSED_MESSAGE.draw();
+    PAUSED_MESSAGE->draw();
   }
 }
 
@@ -223,11 +223,16 @@ void game::erase() {
   
   hud_erase(_lives, _score, WORLD);
   if (_paused) {
-    PAUSED_MESSAGE.erase();
+    PAUSED_MESSAGE->erase();
   }
 }
   
 void game::toggle_paused() {
+  if (!PAUSED_MESSAGE) {
+    PAUSED_MESSAGE =
+      new message("Paused", "Press space to continue", WORLD);
+  }
+  
   _paused = !_paused;
 }
   

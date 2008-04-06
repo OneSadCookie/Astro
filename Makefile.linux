@@ -1,0 +1,42 @@
+MAKEFLAGS := -r
+
+C_SOURCES := $(wildcard Source/*.c)
+CXX_SOURCES := $(wildcard Source/*.cpp)
+C_OBJECTS := $(patsubst Source/%.c,Build/%.o,$(C_SOURCES))
+CXX_OBJECTS := $(patsubst Source/%.cpp,Build/%.o,$(CXX_SOURCES))
+OBJECTS := $(C_OBJECTS) $(CXX_OBJECTS)
+
+EXE := astro
+
+CC := gcc
+CXX := g++
+INCFLAGS :=
+CFLAGS := -Wall -Wextra -Wno-unused-parameter -Werror -g -O2 $(INCFLAGS)
+CXXFLAGS :=
+LDFLAGS := -lGL -lGLU -lglut
+
+all: $(EXE)
+
+clean:
+	rm -rf Build astro
+
+$(EXE): $(OBJECTS)
+	$(CXX) $^ $(LDFLAGS) -o $@
+
+Build/%.d: Source/%.c
+	@mkdir -p Build
+	$(CC) $(INCFLAGS) -MM $< | perl -pe 's|(.*)(\.o.*)|$$1.d $$1$$2|' > $@
+
+Build/%.o: Source/%.c
+	@mkdir -p Build
+	$(CC) $(CFLAGS) -c $< -o $@
+
+Build/%.d: Source/%.cpp
+	@mkdir -p Build
+	$(CXX) $(INCFLAGS) -MM $< | perl -pe 's|(.*)(\.o.*)|$$1.d $$1$$2|' > $@	
+
+Build/%.o: Source/%.cpp
+	@mkdir -p Build
+	$(CXX) $(CFLAGS) $(CXXFLAGS) -c $< -o $@
+
+include $(OBJECTS:.o=.d)

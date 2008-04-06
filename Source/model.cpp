@@ -46,8 +46,8 @@ model::model(const char* name) {
   _model->num_fans = 0;
   _model->fans = NULL;
   
-  fscanf(file, "vertices %lu\n", &(_model->num_vertices));
-  //printf("%lu vertices in file\n", _model->num_vertices);
+  fscanf(file, "vertices %zu\n", &(_model->num_vertices));
+  //printf("%zu vertices in file\n", _model->num_vertices);
   
   if (_model->num_vertices != 0) {
     _model->vertices = new vertex[_model->num_vertices];
@@ -58,7 +58,7 @@ model::model(const char* name) {
 			 &(_model->vertices[i].z),
 			 &(_model->vertices[i].s),
 			 &(_model->vertices[i].t));
-      /*printf("vertex %lu is at (%f, %f, %f) with texcoords (%f, %f)\n",
+      /*printf("vertex %zu is at (%f, %f, %f) with texcoords (%f, %f)\n",
 			 i,
 			 _model->vertices[i].x,
 			 _model->vertices[i].y,
@@ -68,47 +68,47 @@ model::model(const char* name) {
     }
   }
   
-  fscanf(file, "strips %lu\n", &(_model->num_strips));
-  //printf("%lu strips in file\n", _model->num_strips);
+  fscanf(file, "strips %zu\n", &(_model->num_strips));
+  //printf("%zu strips in file\n", _model->num_strips);
   
   if (_model->num_strips != 0) {
     _model->strips = new gl_command[_model->num_strips];
     for (i = 0; i < _model->num_strips; ++i) {
       size_t j;
-      fscanf(file, "%lu (%[^)])",
+      fscanf(file, "%zu (%[^)])",
 			 &(_model->strips[i].num_vertices),
 			 _model->strips[i].texture);
-      /*printf("read strip %lu (%s)",
+      /*printf("read strip %zu (%s)",
              _model->strips[i].num_vertices, _model->strips[i].texture);*/
 
 	  _model->strips[i].vertices = new size_t[_model->strips[i].num_vertices];
       for (j = 0; j < _model->strips[i].num_vertices; ++j) {
-        fscanf(file, " %lu", _model->strips[i].vertices + j);
-        //printf(" %lu", _model->strips[i].vertices[j]);
+        fscanf(file, " %zu", _model->strips[i].vertices + j);
+        //printf(" %zu", _model->strips[i].vertices[j]);
       }
       fscanf(file, "\n");
       //printf("\n");
     }
   }
   
-  fscanf(file, "fans %lu\n", &(_model->num_fans));
-  //printf("%lu fans in file\n", _model->num_fans);
+  fscanf(file, "fans %zu\n", &(_model->num_fans));
+  //printf("%zu fans in file\n", _model->num_fans);
   
   if (_model->num_fans != 0) {
     _model->fans = new gl_command[_model->num_fans];
     for (i = 0; i < _model->num_fans; ++i) {
       size_t j;
-      fscanf(file, "%lu (%[^)])",
+      fscanf(file, "%zu (%[^)])",
 			 &(_model->fans[i].num_vertices),
        _model->fans[i].texture);
-      /*printf("read fan %lu (%s)",
+      /*printf("read fan %zu (%s)",
              _model->fans[i].num_vertices,
 			 _model->fans[i].texture);*/
                    
       _model->fans[i].vertices = new size_t[_model->fans[i].num_vertices];
       for (j = 0; j < _model->fans[i].num_vertices; ++j) {
-        fscanf(file, " %lu", _model->fans[i].vertices + j);
-        //printf(" %lu", _model->fans[i].vertices[j]);
+        fscanf(file, " %zu", _model->fans[i].vertices + j);
+        //printf(" %zu", _model->fans[i].vertices[j]);
       }
       fscanf(file, "\n");
       //printf("\n");
