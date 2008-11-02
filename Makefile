@@ -14,7 +14,7 @@ ARCHS := ppc i386 x86_64
 
 CC      := gcc-4.0
 CXX     := g++-4.0
-CFLAGS  := -Wall -Wextra -Wno-unused-parameter -Wnewline-eof -Werror -O2 -gfull
+CFLAGS  := -Wall -Wextra -Wno-unused-parameter -Wnewline-eof -Werror -O2 -gfull -pipe -mdynamic-no-pic
 CXXFLAGS  = $(CFLAGS) -fno-exceptions -fno-rtti
 LDFLAGS  := $(patsubst %,-framework %,Cocoa OpenGL GLUT)
 
