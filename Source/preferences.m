@@ -7,12 +7,17 @@
 //}
 
 long  getIntegerPreference(const char* key, long d/*efault*/) {
-  NSString* k = [NSString stringWithCString: key];
+  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+  
+  NSString* k = [NSString stringWithUTF8String: key];
   NSUserDefaults* prefs = [NSUserDefaults standardUserDefaults];
   NSDictionary *dv = [NSDictionary dictionaryWithObject: [NSNumber numberWithLong: d]
                                    forKey: k];
   [prefs registerDefaults: dv];
-  return [prefs integerForKey: k];
+  long result = [prefs integerForKey: k];
+  
+  [pool release];
+  return result;
 }
 
 //float getFloatPreference(const char* key, float d/*efault*/) {
@@ -20,16 +25,19 @@ long  getIntegerPreference(const char* key, long d/*efault*/) {
 //}
 
 char* getStringPreference(const char* key, char* buffer, unsigned int bufsize) {
+  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+  
   NSString* v;
-  NSString* k = [NSString stringWithCString: key];
+  NSString* k = [NSString stringWithUTF8String: key];
   NSUserDefaults* prefs = [NSUserDefaults standardUserDefaults];
-  NSDictionary *dv = [NSDictionary dictionaryWithObject: [NSString stringWithCString: buffer]
+  NSDictionary *dv = [NSDictionary dictionaryWithObject: [NSString stringWithUTF8String: buffer]
                                    forKey: k];
   [prefs registerDefaults: dv];
   
   v = [prefs objectForKey: k];
-  [v getCString: buffer maxLength: bufsize - 1];
+  [v getCString: buffer maxLength: bufsize encoding: NSUTF8StringEncoding];
   
+  [pool release];
   return buffer;
 }
 
@@ -37,18 +45,30 @@ char* getStringPreference(const char* key, char* buffer, unsigned int bufsize) {
 //}
 
 void  putIntegerPreference(const char* key, long value) {
+  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+  
   [[NSUserDefaults standardUserDefaults] setInteger: value
-                                         forKey: [NSString stringWithCString: key]];
+                                         forKey: [NSString stringWithUTF8String: key]];
+  
+  [pool release];
 }
 
 //void  putFloatPreference(const char* key, float value) {
 //}
 
 void  putStringPreference(const char* key, const char* value) {
-  [[NSUserDefaults standardUserDefaults] setObject: [NSString stringWithCString: value]
-                                         forKey: [NSString stringWithCString: key]];
+  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+  
+  [[NSUserDefaults standardUserDefaults] setObject: [NSString stringWithUTF8String: value]
+                                         forKey: [NSString stringWithUTF8String: key]];
+  
+  [pool release];
 }
 
 void  writePreferencesToDisk() {
+  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+  
   [[NSUserDefaults standardUserDefaults] synchronize];
+  
+  [pool release];
 }
