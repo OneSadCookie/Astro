@@ -1,3 +1,5 @@
+MAKEFLAGS := Rr $(shell echo -j$$(((1 + 3 * `sysctl -n hw.ncpu`) / 2)))
+
 APP := Astro
 
 C_EXTS   := c m
@@ -28,12 +30,12 @@ LDFLAGS_ppc    := $(LDFLAGS_generic)
 LDFLAGS_i386   := $(LDFLAGS_generic)
 LDFLAGS_x86_64 := $(LDFLAGS_generic)
 
-define src_to_obj_1 #(arch,ext,sources)
+define src_to_obj_1ext #(arch,ext,sources)
 $(patsubst %.$(2),build/$(1)/%.$(2).o,$(filter %.$(2),$(3)))
 endef
 
 define src_to_obj #(arch,sources)
-$(foreach ext,$(EXTS),$(call src_to_obj_1,$(1),$(ext),$(2)))
+$(foreach ext,$(EXTS),$(call src_to_obj_1ext,$(1),$(ext),$(2)))
 endef
 
 define c_rules #(arch,ext)
@@ -44,7 +46,7 @@ build/$(1)/%.$(2).o: %.$(2) Makefile
 build/$(1)/%.$(2).d: %.$(2) Makefile
 	mkdir -p $$(@D)
 	$$(CC_$(1)) -arch $(1) $$(CFLAGS_$(1)) -MM $$< |\
-		perl -pe 's|((.*)\.o.*)|build/$(1)/$$$$2.d build/$(1)/$$$$1|' > $$@
+		awk 'sub(".*:", "$$(@:.d=.o) $$@:")' > $$@
 
 endef
 
@@ -56,7 +58,7 @@ build/$(1)/%.$(2).o: %.$(2) Makefile
 build/$(1)/%.$(2).d: %.$(2) Makefile
 	mkdir -p $$(@D)
 	$$(CXX_$(1)) -arch $(1) $$(CXXFLAGS_$(1)) -MM $$< |\
-		perl -pe 's|((.*)\.o.*)|build/$(1)/$$$$2.d build/$(1)/$$$$1|' > $$@
+		awk 'sub(".*:", "$$(@:.d=.o) $$@:")' > $$@
 
 endef
 
