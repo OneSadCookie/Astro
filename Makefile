@@ -17,7 +17,9 @@ LDFLAGS  := $(patsubst %,-framework %,Cocoa OpenGL GLUT)
 build/x86_64/%: CC := gcc-4.2
 build/x86_64/%: CXX := g++-4.2
 
-sdk = -isysroot /Developer/SDKs/MacOSX$(1).sdk -mmacosx-version-min=$(2)
+define sdk #(sdk,min)
+-isysroot /Developer/SDKs/MacOSX$(1).sdk -mmacosx-version-min=$(2)
+endef
 
 build/ppc/%: CFLAGS += $(call sdk,10.4u,10.4)
 build/i386/%: CFLAGS += $(call sdk,10.4u,10.4)
