@@ -7,6 +7,8 @@ APP := Astro
 C_EXTS   := c m
 CXX_EXTS := cc cpp cxx c++ mm
 EXTS      = $(C_EXTS) $(CXX_EXTS)
+H_EXTS   := h
+HXX_EXTS := hh hpp hxx h++
 
 ARCHS := ppc i386 x86_64
 
@@ -36,26 +38,20 @@ $(foreach ext,$(EXTS),$(call src_to_obj_1ext,$(1),$(ext),$(2)))
 endef
 
 define c_rules #(arch,ext)
-build/$(1)/%.$(2).o: %.$(2) Makefile
+build/$(1)/%.$(2).o build/$(1)/%.$(2).d: %.$(2) Makefile
 	mkdir -p $$(@D)
-	$$(CC) -arch $(1) $$(CFLAGS) -c $$< -o $$@
-
-build/$(1)/%.$(2).d: %.$(2) Makefile
-	mkdir -p $$(@D)
-	$$(CC) -arch $(1) $$(CFLAGS) -MM $$< |\
-		awk 'sub(".*:", "$$(@:.d=.o) $$@:")' > $$@
+	$$(CC) -arch $(1) $$(CFLAGS) -c $$< -o build/$(1)/$$*.$(2).o \
+		-MMD -MF build/$(1)/$$*.$(2).d -MP \
+		-MT 'build/$(1)/$$*.$(2).o build/$(1)/$$*.$(2).d'
 
 endef
 
 define cxx_rules #(arch,ext)
-build/$(1)/%.$(2).o: %.$(2) Makefile
+build/$(1)/%.$(2).o build/$(1)/%.$(2).d: %.$(2) Makefile
 	mkdir -p $$(@D)
-	$$(CXX) -arch $(1) $$(CXXFLAGS) -c $$< -o $$@
-
-build/$(1)/%.$(2).d: %.$(2) Makefile
-	mkdir -p $$(@D)
-	$$(CXX) -arch $(1) $$(CXXFLAGS) -MM $$< |\
-		awk 'sub(".*:", "$$(@:.d=.o) $$@:")' > $$@
+	$$(CXX) -arch $(1) $$(CXXFLAGS) -c $$< -o build/$(1)/$$*.$(2).o \
+		-MMD -MF build/$(1)/$$*.$(2).d -MP \
+		-MT 'build/$(1)/$$*.$(2).o build/$(1)/$$*.$(2).d'
 
 endef
 
@@ -112,6 +108,7 @@ clean:
 	rm -rf build $(APP).app
 
 .DEFAULT_GOAL := all
+.PHONY: all clean
 
 ifneq ($(MAKECMDGOALS),clean)
 -include $(OBJECTS:.o=.d)
