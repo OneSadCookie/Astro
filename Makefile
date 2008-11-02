@@ -110,7 +110,7 @@ all: $(EXE) $(INFO_PLIST) $(PKGINFO)
 	rsync -r --del --exclude '.*' Resources $(APP).app/Contents/
 
 clean:
-	rm -rf build
+	rm -rf build $(APP).app
 
 .DEFAULT_GOAL := all
 
