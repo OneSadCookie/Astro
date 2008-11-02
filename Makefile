@@ -115,9 +115,4 @@ ifneq ($(MAKECMDGOALS),clean)
 endif
 
 Makefile:;
-$(foreach ext,$(EXTS),$(eval %.$(ext):;))
-%.h:;
-%.hpp:;
-%.hxx:;
-%.h++:;
-%.plist:;
+$(foreach ext,$(EXTS) $(H_EXTS) $(HXX_EXTS) plist,$(eval %.$(ext):;))
