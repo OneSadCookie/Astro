@@ -1,3 +1,5 @@
+# Rr are here in the hope that they one day work.  Right now, they do
+# nothing, hence the no-deps rules at the end of the file.  -j does work.
 MAKEFLAGS := Rr $(shell echo -j$$(((1 + 3 * `sysctl -n hw.ncpu`) / 2)))
 
 APP := Astro
