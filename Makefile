@@ -11,15 +11,17 @@ ARCHS := ppc i386 x86_64
 CC      := gcc-4.0
 CXX     := g++-4.0
 CFLAGS  := -Wall -Wextra -Wno-unused-parameter -Wnewline-eof -Werror -O2 -gfull
-CXXFLAGS  = $(CFLAGS)
+CXXFLAGS  = $(CFLAGS) -fno-exceptions -fno-rtti
 LDFLAGS  := $(patsubst %,-framework %,Cocoa OpenGL GLUT)
 
 build/x86_64/%: CC := gcc-4.2
 build/x86_64/%: CXX := g++-4.2
 
-build/ppc/%: CFLAGS += -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
-build/i386/%: CFLAGS += -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
-build/x86_64/%: CFLAGS += -isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5
+sdk = -isysroot /Developer/SDKs/MacOSX$(1).sdk -mmacosx-version-min=$(2)
+
+build/ppc/%: CFLAGS += $(call sdk,10.4u,10.4)
+build/i386/%: CFLAGS += $(call sdk,10.4u,10.4)
+build/x86_64/%: CFLAGS += $(call sdk,10.5,10.5)
 
 define src_to_obj_1ext #(arch,ext,sources)
 $(patsubst %.$(2),build/$(1)/%.$(2).o,$(filter %.$(2),$(3)))
