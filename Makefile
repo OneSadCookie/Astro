@@ -6,29 +6,20 @@ C_EXTS   := c m
 CXX_EXTS := cc cpp cxx c++ mm
 EXTS      = $(C_EXTS) $(CXX_EXTS)
 
-ARCHS    := ppc i386 x86_64
+ARCHS := ppc i386 x86_64
 
-CC_ppc    := gcc-4.0
-CC_i386   := gcc-4.0
-CC_x86_64 := gcc-4.2
+CC      := gcc-4.0
+CXX     := g++-4.0
+CFLAGS  := -Wall -Wextra -Wno-unused-parameter -Wnewline-eof -Werror -O2 -gfull
+CXXFLAGS  = $(CFLAGS)
+LDFLAGS  := $(patsubst %,-framework %,Cocoa OpenGL GLUT)
 
-CXX_ppc    := g++-4.0
-CXX_i386   := g++-4.0
-CXX_x86_64 := g++-4.2
+build/x86_64/%: CC := gcc-4.2
+build/x86_64/%: CXX := g++-4.2
 
-CFLAGS_generic := -Wall -Wextra -Wno-unused-parameter -Wnewline-eof -Werror -O2 -gfull
-CFLAGS_ppc    := -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 $(CFLAGS_generic)
-CFLAGS_i386   := -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4 $(CFLAGS_generic)
-CFLAGS_x86_64 := -isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5 $(CFLAGS_generic)
-
-CXXFLAGS_ppc    := $(CFLAGS_ppc)
-CXXFLAGS_i386   := $(CFLAGS_i386)
-CXXFLAGS_x86_64 := $(CFLAGS_x86_64)
-
-LDFLAGS_generic := $(patsubst %,-framework %,Cocoa OpenGL GLUT)
-LDFLAGS_ppc    := $(LDFLAGS_generic)
-LDFLAGS_i386   := $(LDFLAGS_generic)
-LDFLAGS_x86_64 := $(LDFLAGS_generic)
+build/ppc/%: CFLAGS += -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
+build/i386/%: CFLAGS += -isysroot /Developer/SDKs/MacOSX10.4u.sdk -mmacosx-version-min=10.4
+build/x86_64/%: CFLAGS += -isysroot /Developer/SDKs/MacOSX10.5.sdk -mmacosx-version-min=10.5
 
 define src_to_obj_1ext #(arch,ext,sources)
 $(patsubst %.$(2),build/$(1)/%.$(2).o,$(filter %.$(2),$(3)))
@@ -41,11 +32,11 @@ endef
 define c_rules #(arch,ext)
 build/$(1)/%.$(2).o: %.$(2) Makefile
 	mkdir -p $$(@D)
-	$$(CC_$(1)) -arch $(1) $$(CFLAGS_$(1)) -c $$< -o $$@
+	$$(CC) -arch $(1) $$(CFLAGS) -c $$< -o $$@
 
 build/$(1)/%.$(2).d: %.$(2) Makefile
 	mkdir -p $$(@D)
-	$$(CC_$(1)) -arch $(1) $$(CFLAGS_$(1)) -MM $$< |\
+	$$(CC) -arch $(1) $$(CFLAGS) -MM $$< |\
 		awk 'sub(".*:", "$$(@:.d=.o) $$@:")' > $$@
 
 endef
@@ -53,11 +44,11 @@ endef
 define cxx_rules #(arch,ext)
 build/$(1)/%.$(2).o: %.$(2) Makefile
 	mkdir -p $$(@D)
-	$$(CXX_$(1)) -arch $(1) $$(CXXFLAGS_$(1)) -c $$< -o $$@
+	$$(CXX) -arch $(1) $$(CXXFLAGS) -c $$< -o $$@
 
 build/$(1)/%.$(2).d: %.$(2) Makefile
 	mkdir -p $$(@D)
-	$$(CXX_$(1)) -arch $(1) $$(CXXFLAGS_$(1)) -MM $$< |\
+	$$(CXX) -arch $(1) $$(CXXFLAGS) -MM $$< |\
 		awk 'sub(".*:", "$$(@:.d=.o) $$@:")' > $$@
 
 endef
@@ -68,7 +59,7 @@ $(foreach ext,$(CXX_EXTS),$(call cxx_rules,$(1),$(ext)))
 
 build/$(1)/$$(APP): $$(OBJECTS_$(1)) Makefile
 	mkdir -p $$(@D)
-	$$(CXX_$(1)) -arch $(1) $$(CXXFLAGS_$(1)) $$(LDFLAGS_$(1)) $$(OBJECTS_$(1)) -o $$@
+	$$(CXX) -arch $(1) $$(CXXFLAGS) $$(LDFLAGS) $$(OBJECTS_$(1)) -o $$@
 endef
 
 define find_source #(dir)
