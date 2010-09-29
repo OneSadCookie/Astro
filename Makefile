@@ -46,6 +46,9 @@ $(PKGINFO): Makefile
 all: Makefile $(EXE) $(INFO_PLIST) $(PKGINFO)
 	rsync -r --del --exclude '.*' Resources $(CONTENTS)/
 
+Astro.dmg: Makefile all
+	dmgcanvas Astro.dmgCanvas Astro.dmg -leopard-compatible
+
 clean:
 	rm -rf build $(APP)
 
