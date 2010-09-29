@@ -47,7 +47,6 @@ end
 
 MIN_OS_VERSION_BY_DARWIN_VERSION = {
     7 => '10.3.9',
-    8 => '10.4.11',
 }
 
 def min_os_version_from_darwin_version(version)

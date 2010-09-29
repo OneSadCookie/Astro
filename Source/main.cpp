@@ -59,7 +59,7 @@ int main(int argc, char** argv) {
 
   glutInit(&argc, argv);
   glutInitDisplayMode(GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE);
-  glutInitWindowSize(400, 300);
+  glutInitWindowSize(800, 500);
 #if defined(USE_GLUT_GAME_MODE)
   glutGameModeString("640x480:32");
   if (glutGameModeGet(GLUT_GAME_MODE_POSSIBLE)) {
