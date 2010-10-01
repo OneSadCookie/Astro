@@ -50,7 +50,7 @@ Astro.dmg: Makefile all
 	dmgcanvas Astro.dmgCanvas Astro.dmg -leopard-compatible
 
 clean:
-	rm -rf build $(APP)
+	rm -rf build $(BUNDLE)
 
 .DEFAULT_GOAL := all
 .PHONY: all clean
