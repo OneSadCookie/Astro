@@ -1,7 +1,7 @@
 MAKEFLAGS := Rr $(shell echo -j$$(((1 + 3 * `sysctl -n hw.ncpu`) / 2)))
 
 export APP := Astro
-ARCHS      := ppc i386 x86_64
+ARCHS      := i386 x86_64
 
 C_EXTS   := c m
 CXX_EXTS := cc cpp cxx c++ mm
@@ -15,7 +15,7 @@ EXE        := $(CONTENTS)/MacOS/$(APP)
 INFO_PLIST := $(CONTENTS)/Info.plist
 PKGINFO    := $(CONTENTS)/PkgInfo
 
-export CFLAGS   := -Wall -Wextra -Wno-unused-parameter -Wnewline-eof -Werror -O2 -gfull -pipe -mdynamic-no-pic
+export CFLAGS   := -Wall -Wextra -Wno-unused-parameter -Wnewline-eof -O2 -gfull -pipe -mdynamic-no-pic
 export CXXFLAGS  = $(CFLAGS) -fno-exceptions -fno-rtti
 export LDFLAGS  := $(patsubst %,-framework %,Cocoa OpenGL GLUT)
 

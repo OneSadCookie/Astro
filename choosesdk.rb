@@ -38,7 +38,7 @@ def possible_darwin_versions(arch)
 end
 
 def available_sdks()
-    Hash[*(Dir[$developer + '/SDKs/*.sdk'].map { |sdk|
+    Hash[*(Dir[$developer + 'SDKs/*.sdk'].map { |sdk|
         sdk =~ /.*MacOSX(.*)\.sdk/
         sdk_name = $1
         [macosx_to_darwin_version(standardize_sdk(sdk_name)), sdk_name]
@@ -61,11 +61,11 @@ COMPILERS_BY_DARWIN_VERSION = {
 }
 
 def cc_from_darwin_version(version)
-    COMPILERS_BY_DARWIN_VERSION[version][0] || 'cc'
+    COMPILERS_BY_DARWIN_VERSION[version] && "#{$developer}/usr/bin/#{COMPILERS_BY_DARWIN_VERSION[version][0]}" || `xcrun -find cc`.chomp
 end
 
 def cxx_from_darwin_version(version)
-    COMPILERS_BY_DARWIN_VERSION[version][1] || 'c++'
+    COMPILERS_BY_DARWIN_VERSION[version] && "#{$developer}/usr/bin/#{COMPILERS_BY_DARWIN_VERSION[version][1]}" || `xcrun -find c++`.chomp
 end
 
 def choose_sdk(arch)
@@ -77,13 +77,13 @@ def choose_sdk(arch)
     {
         'SDK'                => "#{$developer}/SDKs/MacOSX#{sdks[version]}.sdk",
         'MACOSX_VERSION_MIN' => min_os_version_from_darwin_version(version),
-        'CC'                 => "#{$developer}/usr/bin/#{cc_from_darwin_version(version)}",
-        'CXX'                => "#{$developer}/usr/bin/#{cxx_from_darwin_version(version)}",
+        'CC'                 => cc_from_darwin_version(version),
+        'CXX'                => cxx_from_darwin_version(version),
     }
 end
 
 def main
-    $developer = `xcode-select -print-path`.chomp
+    $developer = `xcode-select -print-path`.chomp + '/Platforms/MacOSX.platform/Developer/'
     if $?.exitstatus != 0 then
         $stderr.puts "Can't run xcode-select -print-path"
         exit

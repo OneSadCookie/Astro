@@ -122,13 +122,21 @@ void display() {
       }
     }
   
-    glClear(GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   
     _game->draw();
     
     glutSwapBuffers();
     
-    _game->erase();
+    // NOTE
+    // previously, to avoid clearing, I'd erase
+    // this requires NSOpenGLPFABackingStore
+    // which one can't force in GLUT
+    // so it "should" never have worked...
+    // instead, now just clear the color buffer bit
+    // which is probably faster anyway
+    // on anything better than a Rage 128...
+    // _game->erase();
     
     ++_frameNumber;
     
@@ -138,7 +146,7 @@ void display() {
     _prevStepTime = now - stepExtra;
   
   } else {
-    glClear(GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   
     _title_message->draw();
     PLAY_BUTTON->draw(_play_pushed);
@@ -146,9 +154,10 @@ void display() {
     
     glutSwapBuffers();
     
-    PLAY_BUTTON->erase(_play_pushed);
-    QUIT_BUTTON->erase(_quit_pushed);
-    _title_message->erase();
+    // see NOTE above
+    // PLAY_BUTTON->erase(_play_pushed);
+    // QUIT_BUTTON->erase(_quit_pushed);
+    // _title_message->erase();
   }
 }
 
